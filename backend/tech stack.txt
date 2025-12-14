@@ -1,0 +1,6 @@
+Express
+React
+Postgres 18
+MUI
+Prisma
+axios
