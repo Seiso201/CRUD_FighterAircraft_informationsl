@@ -8,6 +8,8 @@ import { useTheme } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
+import Form from "./components/Form";
 
 function App() {
   const [backendData, setBackendData] = useState(null);
@@ -17,6 +19,11 @@ function App() {
   const theme = useTheme();
   const domain = "http://localhost:3000/";
 
+  // modal
+  const [modal, setModal] = useState({ type: null, id: null });
+  const openCreate = () => setModal({ type: 'create', id: null });
+  const openEdit = id => setModal({ type: 'edit', id });
+  const closeModal = () => setModal({ type: null, id: null });
 
   useEffect(() => {
     // ใช้ axios ซึ่งดีกว่า fetch ตรงที่แปลงเป็น json ให้เลย
@@ -65,21 +72,37 @@ function App() {
             </Button>
           </div>
         </div>
+        
+        {/* Modal */}
+        <Button onClick={openCreate}>Create Aircraft</Button>
 
         {loading && <p>Loading data from backend...</p>}
 
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
         {/* การใช้ props */}
-        <Grid container spacing={2} sx={{margin:2}}>
-          {backendData && 
-        backendData.map(backenddata => (
-          <Grid size={4}>
-            <MediaCard data={backenddata} />
-          </Grid>
-        ))
-        }
+        <Grid container spacing={2} sx={{ margin: 2 }}>
+          {backendData &&
+            backendData.map((item) => (
+              <Grid size={4} key={item.id} >
+                <MediaCard 
+                  data={item} 
+                  onEdit={() => openEdit(item.id)}
+                />
+              </Grid>
+            ))}
         </Grid>
+        
+        {/* Modal */}
+        <Modal
+          open={modal.type !== null}
+          onClose={closeModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Form use_for={modal.type === "create" ? "create" : "edit"} id={modal.id} onClose={closeModal}  />
+        </Modal>
+
       </div>
     </Container>
   );
