@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios';
+import MediaCard from './components/Card.jsx';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { useTheme } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 function App() {
   const [backendData, setBackendData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [text, setText] = useState('');
-
+  const theme = useTheme();
 
   useEffect(() => {
-    // 2. ใช้ fetch API เพื่อเรียก Express Endpoint
+    // ใช้ axios ซึ่งดีกว่า fetch ตรงที่แปลงเป็น json ให้เลย
     axios.get('http://localhost:3000/')
       .then(response => {
         setBackendData(response.data);
@@ -23,38 +27,34 @@ function App() {
         setError(err.message);
         setLoading(false);
       });
-  }, []); // [] หมายถึงให้เรียกใช้แค่ครั้งเดียวเมื่อ Component mount
+  }, []); // [] คือ dependencies ถ้าค่าไหนในวงเล็บนี้เปลี่ยน useState จะทำงานอีกครั้ง ถ้าเป็นค่าว่างจะทำงานตอนแรกทีเดียว
 
   return (
-    <>
-      <div className="App">
-      <h1>Air Craft Transfer Data</h1>
+    <Container>
+      <div className="App" >
+      <Typography variant='h2' sx={{color:theme.palette.secondary.main, fontFamily:theme.typography.fontFamily}}>Air-Craft</Typography>
+
+      <div>
+      <p>{text}</p>
+      <form>
+        <TextField id="outlined-basic" label="Search" variant="outlined" type="text" sx={{width:500, margin:1}} value={text} onChange={(e) => setText(e.target.value)}/>
+      </form>
+      <div id='btn'>
+      <Button sx={{margin:1, fontFamily:theme.typography.fontFamily}}>Search</Button>
+    </div>
+    </div>
       
       {loading && <p>Loading data from backend...</p>}
       
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
 
-      {/* 4. แสดงผลข้อมูลที่ได้รับ */}
+      {/* การใช้ props */}
       {backendData && (
-        <div>
-          <h2>Data Received:</h2>
-          <p><strong>Air-Craft Name :</strong> {backendData.name}</p>
-          <p><strong>Country:</strong> {backendData.country}</p>
-          <p><strong>Role:</strong> {backendData.role}</p>
-          <p><strong>Max-Speed:</strong> {backendData.max_speed}</p>
-          <p><strong>Year:</strong> {backendData.year}</p>
-          <p><strong>Stealth:</strong> {backendData.stealth}</p>
-        </div>
+          <MediaCard data={backendData} sx={{}} />
       )}
     </div>
 
-    <div>
-      <p>{text}</p>
-      <form>
-        <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-      </form>
-    </div>
-    </>
+    </Container>
   )
 }
 
