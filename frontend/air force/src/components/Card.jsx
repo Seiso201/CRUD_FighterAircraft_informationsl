@@ -6,12 +6,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export default function MediaCard({data}) {
+  const domain = "http://localhost:3000";
+
     return(
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         sx={{ height: 140 }}
-        image="/static/images/cards/contemplative-reptile.jpg"
-        title="green iguana"
+        image={domain+data.image}
+        title={data.name}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
