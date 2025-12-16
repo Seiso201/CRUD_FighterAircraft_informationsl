@@ -45,6 +45,10 @@ app.get('/', async(req, res) => {
   res.json(data);
 });
 
+app.post('/create', async(req, res) => {
+  
+})
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

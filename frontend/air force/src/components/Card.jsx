@@ -6,8 +6,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import Modal from '@mui/material/Modal';
-import Form from './Form';
-
 
 export default function MediaCard({data, onEdit}) {
   const domain = "http://localhost:3000";
