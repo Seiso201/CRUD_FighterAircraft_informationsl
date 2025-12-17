@@ -100,7 +100,7 @@ function App() {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Form use_for={modal.type === "create" ? "create" : "edit"} id={modal.id} onClose={closeModal}  />
+          <Form use_for={modal.type === "create" ? "create" : "edit"} id={modal.id} onClose={closeModal} edit_data={backendData?.find(item => item.id === modal.id)}  />
         </Modal>
 
       </div>

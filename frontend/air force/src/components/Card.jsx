@@ -4,8 +4,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import Modal from '@mui/material/Modal';
 
 export default function MediaCard({data, onEdit}) {
   const domain = "http://localhost:3000";

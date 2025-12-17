@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -10,7 +10,7 @@ import AntSwitch from "@mui/material/Switch";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 
-export default function Form({ use_for, id }) {
+export default function Form({ use_for, id, edit_data }) {
   const style = {
     position: "absolute",
     top: "40%",
@@ -44,8 +44,10 @@ export default function Form({ use_for, id }) {
   const [stealth, setStealth] = useState(true);
   const [image, setImage] = useState(null);
 
-  // State สำหรับข้อความตอบกลับ
   const [responseMessage, setResponseMessage] = useState("");
+
+  const url = use_for === "create" ? "http://localhost:3000/create" : `http://localhost:3000/edit/${id}`;
+  const method = use_for === "create" ? axios.post : axios.put;
 
   // ฟังก์ชันจัดการการเลือกไฟล์
   const handleFileChange = (event) => {
@@ -53,7 +55,6 @@ export default function Form({ use_for, id }) {
     setImage(event.target.files[0]);
   };
 
-  // 5. ฟังก์ชันจัดการการ Submit ฟอร์ม
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -71,7 +72,11 @@ export default function Form({ use_for, id }) {
     formData.append("max_speed", max_speed);
     formData.append("year", year);
     formData.append("stealth", stealth);
-    formData.append("image", image);
+    if (image === edit_data.image) {
+      formData.append("current_image", edit_data.image);
+    } else {
+      formData.append("image", image);
+    }
 
     console.log([...formData.entries()]);
 
@@ -79,10 +84,8 @@ export default function Form({ use_for, id }) {
     setResponseMessage("Sending data...");
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/create",
-        formData, // ส่ง FormData Object
-      );
+      const response = await method(
+        url, formData);
 
       // สำเร็จ
       setResponseMessage(`Success: ${response.data.message}`);
@@ -104,6 +107,18 @@ export default function Form({ use_for, id }) {
       );
     }
   };
+
+  if (use_for === "edit" && edit_data) {
+      useEffect(() => {
+        setName(edit_data.name);
+      setRole(edit_data.role);
+      setCountry(edit_data.country);
+      setMax_speed(edit_data.max_speed);
+      setYear(edit_data.year);
+      setStealth(edit_data.stealth);
+      setImage(edit_data.image);
+    }, []);
+  }
 
   return (
     <Box sx={style}>
@@ -161,31 +176,39 @@ export default function Form({ use_for, id }) {
               sx={{ alignItems: "center", marginY: "10px" }}
             >
               <TextField
-              id="outlined-basic"
-              sx={{ marginY: "10px", marginRight: "4%", width: "48%" }}
-              label="First Year Service"
-              variant="outlined"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              required
-            />
-
+                id="outlined-basic"
+                sx={{ marginY: "10px", marginRight: "4%", width: "48%" }}
+                label="First Year Service"
+                variant="outlined"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                required
+              />
               <Stack
-                direction="row"
-                spacing={1}
+                direction="column"
                 sx={{
                   alignItems: "center",
                   width: "48%",
                   justifyContent: "center",
                 }}
               >
-                <Typography>False</Typography>
-                <AntSwitch
-                  checked={stealth}
-                  onChange={(e) => setStealth(e.target.checked)}
-                  inputProps={{ "aria-label": "ant design" }}
-                />
-                <Typography>True</Typography>
+                <Typography>Stealth: </Typography>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography>false</Typography>
+                  <AntSwitch
+                    checked={stealth}
+                    onChange={(e) => setStealth(e.target.checked)}
+                    inputProps={{ "aria-label": "ant design" }}
+                  />
+                  <Typography>true</Typography>
+                </Stack>
               </Stack>
             </Stack>
             <Button
@@ -204,9 +227,7 @@ export default function Form({ use_for, id }) {
                 multiple
               />
             </Button>
-            {image && (
-              <p style={{ margin: "5px 0" }}>Selected: {image.name}</p>
-            )}
+            {image && <p style={{ margin: "5px 0" }}>Selected: {image.name}</p>}
             <Button type="submit" sx={{ marginY: "30px" }}>
               Submit
             </Button>
@@ -220,9 +241,124 @@ export default function Form({ use_for, id }) {
           )}
         </Container>
       ) : (
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Edit Aircraft {id}
-        </Typography>
+        <Container>
+          <Typography
+            id="modal-modal-title"
+            variant="h5"
+            sx={{ marginY: "10px" }}
+            component="h2"
+            style={{ textAlign: "center" }}
+          >
+            Edit Aircraft
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              id="outlined-basic"
+              sx={{ marginY: "10px", width: "100%" }}
+              label="Air-Craft Name"
+              variant="outlined"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <TextField
+              id="outlined-basic"
+              sx={{ marginY: "10px", width: "100%" }}
+              label="Role"
+              variant="outlined"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              required
+            />
+            <TextField
+              id="outlined-basic"
+              sx={{ marginY: "10px", marginRight: "4%", width: "48%" }}
+              label="Country"
+              variant="outlined"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+            />
+            <TextField
+              id="outlined-basic"
+              sx={{ marginY: "10px", width: "48%" }}
+              label="Max-Speed"
+              variant="outlined"
+              value={max_speed}
+              onChange={(e) => setMax_speed(e.target.value)}
+              required
+            />
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ alignItems: "center", marginY: "10px" }}
+            >
+              <TextField
+                id="outlined-basic"
+                sx={{ marginY: "10px", marginRight: "4%", width: "48%" }}
+                label="First Year Service"
+                variant="outlined"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                required
+              />
+
+              <Stack
+                direction="column"
+                sx={{
+                  alignItems: "center",
+                  width: "48%",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography>Stealth: </Typography>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography>false</Typography>
+                  <AntSwitch
+                    checked={stealth}
+                    onChange={(e) => setStealth(e.target.checked)}
+                    inputProps={{ "aria-label": "ant design" }}
+                  />
+                  <Typography>true</Typography>
+                </Stack>
+              </Stack>
+            </Stack>
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{ marginY: "10px", marginRight: "60%" }}
+            >
+              Upload files
+              <VisuallyHiddenInput
+                id="file-input"
+                type="file"
+                onChange={handleFileChange}
+                multiple
+              />
+            </Button>
+            {image && <p style={{ margin: "5px 0" }}>Selected: {image}</p>}
+            <Button type="submit" sx={{ marginY: "30px" }}>
+              Submit
+            </Button>
+          </form>
+
+          {/* แสดงผลการตอบกลับจาก Server */}
+          {responseMessage && (
+            <p style={{ marginTop: "20px", fontWeight: "bold" }}>
+              Server Response: {responseMessage}
+            </p>
+          )}
+        </Container>
       )}
     </Box>
   );

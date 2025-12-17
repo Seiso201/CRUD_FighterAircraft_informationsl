@@ -87,8 +87,28 @@ app.post('/create', upload.single('image'), async(req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
+})
 
+app.put("/edit/:id", upload.single('image'), async(req, res) => {
+  const id = req.params.id;
 
+  const data = {
+    name: req.body.name,
+    country: req.body.country,
+    role: req.body.role,
+    max_speed: parseFloat(req.body.max_speed),
+    year: parseInt(req.body.year),
+    stealth: req.body.stealth,
+    image: req.file ? `/uploads/${req.file.filename}` : req.body.current_image || null
+  };
+
+  try {
+    await db.query(`UPDATE fighter_aircrafts SET aircraft_name = $1, country = $2, primary_role = $3, max_speed = $4, first_service_year = $5, stealth = $6, image_url = $7 WHERE id = $8`, [data.name, data.country, data.role, data.max_speed, data.year, data.stealth, data.image, id]);
+    res.status(200).json({ message: 'Updated' });
+    } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 })
 
 app.listen(port, () => {
