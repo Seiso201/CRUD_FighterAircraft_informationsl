@@ -25,6 +25,22 @@ function App() {
   const openEdit = id => setModal({ type: 'edit', id });
   const closeModal = () => setModal({ type: null, id: null });
 
+  const handleDelete = async (id) => {
+  if (!id) return;
+  if (!window.confirm("Delete this aircraft?")) return;
+
+  try {
+    setLoading(true);
+    await axios.delete(`${domain}delete/${id}`);
+    setBackendData(prev => (prev ? prev.filter(item => item.id !== id) : prev));
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError(err.message || "Delete failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
   useEffect(() => {
     // ใช้ axios ซึ่งดีกว่า fetch ตรงที่แปลงเป็น json ให้เลย
     axios
@@ -88,6 +104,7 @@ function App() {
                 <MediaCard 
                   data={item} 
                   onEdit={() => openEdit(item.id)}
+                  onDelete={() => handleDelete(item.id)}
                 />
               </Grid>
             ))}

@@ -5,7 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-export default function MediaCard({data, onEdit}) {
+export default function MediaCard({data, onEdit, onDelete}) {
   const domain = "http://localhost:3000";
 
     return(
@@ -31,7 +31,7 @@ export default function MediaCard({data, onEdit}) {
       </CardContent>
       <CardActions>
         <Button onClick={onEdit} size="small" variant='outlined'>Edit</Button>
-        <Button size="small" variant='outlined'>Learn More</Button>
+        <Button onClick={onDelete} size="small" variant='outlined'>Delete</Button>
       </CardActions>
     </Card>
     );

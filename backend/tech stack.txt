@@ -1,6 +1,5 @@
 Express /
 React /
 Postgres 18 /
-MUI
-Prisma
+MUI /
 axios /

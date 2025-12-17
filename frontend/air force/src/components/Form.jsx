@@ -72,7 +72,7 @@ export default function Form({ use_for, id, edit_data }) {
     formData.append("max_speed", max_speed);
     formData.append("year", year);
     formData.append("stealth", stealth);
-    if (image === edit_data.image) {
+    if (use_for === "edit" && edit_data && image === edit_data.image) {
       formData.append("current_image", edit_data.image);
     } else {
       formData.append("image", image);
@@ -111,12 +111,12 @@ export default function Form({ use_for, id, edit_data }) {
   if (use_for === "edit" && edit_data) {
       useEffect(() => {
         setName(edit_data.name);
-      setRole(edit_data.role);
-      setCountry(edit_data.country);
-      setMax_speed(edit_data.max_speed);
-      setYear(edit_data.year);
-      setStealth(edit_data.stealth);
-      setImage(edit_data.image);
+        setRole(edit_data.role);
+        setCountry(edit_data.country);
+        setMax_speed(edit_data.max_speed);
+        setYear(edit_data.year);
+        setStealth(edit_data.stealth);
+        setImage(edit_data.image);
     }, []);
   }
 

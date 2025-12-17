@@ -111,6 +111,18 @@ app.put("/edit/:id", upload.single('image'), async(req, res) => {
   }
 })
 
+app.delete("/delete/:id", async(req, res) => {
+  const id = req.params.id;
+
+  try {
+    await db.query(`DELETE FROM fighter_aircrafts WHERE id = $1`, [id]);
+    res.status(200).json({ message: 'Deleted' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+})
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
