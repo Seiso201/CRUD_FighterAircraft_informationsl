@@ -46,7 +46,6 @@ export default function Form({ use_for, id }) {
 
   // State สำหรับข้อความตอบกลับ
   const [responseMessage, setResponseMessage] = useState("");
-  const [inService, setInService] = useState(true);
 
   // ฟังก์ชันจัดการการเลือกไฟล์
   const handleFileChange = (event) => {
@@ -83,13 +82,6 @@ export default function Form({ use_for, id }) {
       const response = await axios.post(
         "http://localhost:3000/create",
         formData, // ส่ง FormData Object
-        {
-          // ไม่ต้องตั้งค่า Content-Type เอง! Axios และเบราว์เซอร์จะจัดการ
-          // 'multipart/form-data' และ boundary ให้โดยอัตโนมัติเมื่อใช้ FormData
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
       );
 
       // สำเร็จ
@@ -103,6 +95,7 @@ export default function Form({ use_for, id }) {
       setStealth(true);
       setImage(null);
       document.getElementById("file-input").value = null; // รีเซ็ต input type="file"
+      window.location.reload();
     } catch (error) {
       console.error("Error sending data:", error);
       // จัดการ Error ที่มาจาก Server หรือ Network
@@ -205,6 +198,7 @@ export default function Form({ use_for, id }) {
             >
               Upload files
               <VisuallyHiddenInput
+                id="file-input"
                 type="file"
                 onChange={handleFileChange}
                 multiple
