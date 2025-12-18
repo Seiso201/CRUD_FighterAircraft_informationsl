@@ -33,3 +33,16 @@ export const createAircraft = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+export const updateAircraft = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const aircraftData = req.body;
+        aircraftData.file = req.file;
+        const updatedAircraft = await aircraftServices.updateAircraft(id, aircraftData);
+        res.status(200).json(updatedAircraft);
+    } catch (error) {
+        console.error('Error updating aircraft:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};

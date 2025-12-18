@@ -351,7 +351,7 @@ export default function Form({ use_for, id, edit_data, onClose, onSaved }) {
                 multiple
               />
             </Button>
-            {image && <p style={{ margin: "5px 0" }}>Selected: {image}</p>}
+            {image && <p style={{ margin: "5px 0" }}>Selected: {image.name}</p>}
             <Button type="submit" sx={{ marginY: "30px" }}>
               Submit
             </Button>
