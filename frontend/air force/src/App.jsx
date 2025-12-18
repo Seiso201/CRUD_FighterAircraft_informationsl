@@ -17,7 +17,7 @@ function App() {
   const [error, setError] = useState(null);
   const [text, setText] = useState("");
   const theme = useTheme();
-  const domain = "http://localhost:3000/";
+  const domain = "http://localhost:3000/api";
 
   // modal
   const [modal, setModal] = useState({ type: null, id: null });
@@ -44,7 +44,7 @@ function App() {
   useEffect(() => {
     // ใช้ axios ซึ่งดีกว่า fetch ตรงที่แปลงเป็น json ให้เลย
     axios
-      .get(domain)
+      .get(domain + "/aircrafts")
       .then((response) => {
         setBackendData(response.data);
         setLoading(false);
