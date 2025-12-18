@@ -21,3 +21,15 @@ export const getAircrafts = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+export const createAircraft = async (req, res) => {
+    try {
+        const aircraftData = req.body;
+        aircraftData.file = req.file;
+        const createdAircraft = await aircraftServices.createAircraft(aircraftData);
+        res.status(201).json(createdAircraft);
+    } catch (error) {
+        console.error('Error creating aircraft:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};

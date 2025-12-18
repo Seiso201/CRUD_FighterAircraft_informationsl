@@ -10,7 +10,7 @@ import AntSwitch from "@mui/material/Switch";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 
-export default function Form({ use_for, id, edit_data }) {
+export default function Form({ use_for, id, edit_data, onClose, onSaved }) {
   const style = {
     position: "absolute",
     top: "40%",
@@ -46,7 +46,8 @@ export default function Form({ use_for, id, edit_data }) {
 
   const [responseMessage, setResponseMessage] = useState("");
 
-  const url = use_for === "create" ? "http://localhost:3000/create" : `http://localhost:3000/edit/${id}`;
+  const domain = "http://localhost:3000/api";
+  const url = use_for === "create" ? `${domain}/aircrafts` : `${domain}/aircrafts/${id}`;
   const method = use_for === "create" ? axios.post : axios.put;
 
   // ฟังก์ชันจัดการการเลือกไฟล์
@@ -97,8 +98,12 @@ export default function Form({ use_for, id, edit_data }) {
       setYear("");
       setStealth(true);
       setImage(null);
-      document.getElementById("file-input").value = null; // รีเซ็ต input type="file"
-      window.location.reload();
+      const fileInput = document.getElementById("file-input");
+      if (fileInput) fileInput.value = null;
+
+      // notify parent to refresh list and close modal
+      if (onSaved) await onSaved();
+      if (onClose) onClose();
     } catch (error) {
       console.error("Error sending data:", error);
       // จัดการ Error ที่มาจาก Server หรือ Network
@@ -108,17 +113,17 @@ export default function Form({ use_for, id, edit_data }) {
     }
   };
 
-  if (use_for === "edit" && edit_data) {
-      useEffect(() => {
-        setName(edit_data.name);
-        setRole(edit_data.role);
-        setCountry(edit_data.country);
-        setMax_speed(edit_data.max_speed);
-        setYear(edit_data.year);
-        setStealth(edit_data.stealth);
-        setImage(edit_data.image);
-    }, []);
-  }
+  useEffect(() => {
+      if (use_for === "edit" && edit_data) {
+        setName(edit_data.name || "");
+        setRole(edit_data.role || "");
+        setCountry(edit_data.country || "");
+        setMax_speed(edit_data.max_speed || "");
+        setYear(edit_data.year || "");
+        setStealth(Boolean(edit_data.stealth));
+        setImage(edit_data.image || null);
+    }
+  }, [use_for, edit_data]);
 
   return (
     <Box sx={style}>

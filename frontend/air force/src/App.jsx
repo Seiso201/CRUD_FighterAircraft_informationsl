@@ -41,19 +41,22 @@ function App() {
   }
 };
 
+  const fetchAircrafts = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(domain + "/aircrafts");
+      setBackendData(res.data);
+      setError(null);
+    } catch (err) {
+      console.error("Axios fetch error:", err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // ใช้ axios ซึ่งดีกว่า fetch ตรงที่แปลงเป็น json ให้เลย
-    axios
-      .get(domain + "/aircrafts")
-      .then((response) => {
-        setBackendData(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Axios fetch error:", err.message);
-        setError(err.message);
-        setLoading(false);
-      });
+    fetchAircrafts();
   }, []); // [] คือ dependencies ถ้าค่าไหนในวงเล็บนี้เปลี่ยน useState จะทำงานอีกครั้ง ถ้าเป็นค่าว่างจะทำงานตอนแรกทีเดียว
 
   return (
@@ -117,7 +120,7 @@ function App() {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Form use_for={modal.type === "create" ? "create" : "edit"} id={modal.id} onClose={closeModal} edit_data={backendData?.find(item => item.id === modal.id)}  />
+          <Form use_for={modal.type === "create" ? "create" : "edit"} id={modal.id} onClose={closeModal} onSaved={fetchAircrafts} edit_data={backendData?.find(item => item.id === modal.id)}  />
         </Modal>
 
       </div>
