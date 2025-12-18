@@ -31,7 +31,7 @@ function App() {
 
   try {
     setLoading(true);
-    await axios.delete(`${domain}delete/${id}`);
+    await axios.delete(`${domain}/aircrafts/${id}`);
     setBackendData(prev => (prev ? prev.filter(item => item.id !== id) : prev));
   } catch (err) {
     console.error("Delete error:", err);

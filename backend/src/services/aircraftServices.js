@@ -21,7 +21,7 @@ export const createAircraft = async (aircraftData) => {
     return rows[0];
 }
 
-export const updateAircraft = async (id, aircraftData) => {
+export const updateAircraft = async (aircraftId, aircraftData) => {
     const data = {
         name: aircraftData.name,
         country: aircraftData.country,
@@ -33,6 +33,11 @@ export const updateAircraft = async (id, aircraftData) => {
     };
     console.log("data" + data);
 
-    const { rows } = await query(`UPDATE fighter_aircrafts SET aircraft_name = $1, country = $2, primary_role = $3, max_speed = $4, first_service_year = $5, stealth = $6, image_url = $7 WHERE id = $8`, [data.name, data.country, data.role, data.max_speed, data.year, data.stealth, data.image, id]);
+    const { rowCount } = await query(`UPDATE fighter_aircrafts SET aircraft_name = $1, country = $2, primary_role = $3, max_speed = $4, first_service_year = $5, stealth = $6, image_url = $7 WHERE id = $8`, [data.name, data.country, data.role, data.max_speed, data.year, data.stealth, data.image, aircraftId]);
+    return rowCount > 0; // Returns true if a row was deleted, false otherwise
+};
+
+export const deleteAircraft = async (aircraftId) => {
+    const { rows } = await query(`DELETE FROM fighter_aircrafts WHERE id = $1`, [aircraftId]);
     return rows[0];
 }

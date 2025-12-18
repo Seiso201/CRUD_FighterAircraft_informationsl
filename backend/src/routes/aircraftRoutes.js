@@ -8,6 +8,7 @@ const router = express.Router();
 router.get('/aircrafts', aircraftControllers.getAircrafts);
 router.post('/aircrafts', upload.single('image'), aircraftControllers.createAircraft);
 router.put('/aircrafts/:id', upload.single('image'), aircraftControllers.updateAircraft);
+router.delete('/aircrafts/:id', aircraftControllers.deleteAircraft);
 
 export default router;
 
